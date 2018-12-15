@@ -78,37 +78,33 @@ router.post('/register', (req, res) => {
 
 
 router.post('/checKlogin', (req, res) => {
+
+  
   //  check if there token is there
-  
-//   if(!token){
-//     res.status(400).send(validating.error);
-//   };
+  const token = req.headers.token;  
+  if(!token){
+    res.status(400).send('token not provided');
+  };
 
-//   //  decode the token and chekc if it's validate
-  
-//   let token = jwt.decode(token);
+  //  decode the token and chekc if it's validate  
+  jwt.verify(token, 'wowpassword', function(err, decoded) {
+    User.findById(decoded._id).then(data => {
+      if (!data) {
+        res.status(404).send('something not found');
+      } else {
+        res.send('yay! you are logged in!')
+      }
+  }).catch(err => {
+    res.status(401).send(err.message);
+  });
 
-//   if(!jwt.verify(token)){
-//     res.status(400).send('token not valid')
-//   } else{
-//     valid = true;
-//   }
 
-//   //  Get the payload from the jsonwebtoken
-  
-//   let payload = jwt.sign(token);
-  
-//   //  return('you are logged in')
-  
-//   if(valid){
-//     return('you are logged in')
-//   }else{
-  
-//     //  you have to login
-  
-//     return('you have to login')
-// }
-});
+  })
+   
+
+
+  });
+
 
 
 router.post('/login', (req, res) => {
