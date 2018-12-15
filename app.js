@@ -13,7 +13,7 @@ const postRoutes = require('./routes/posts');
 const mongoose = require('mongoose');
 
 //  Starting MongoDB connection
-mongoose.connect('mongodb://admin:admin1234@ds127624.mlab.com:27624/camp', { useNewUrlParser: true });
+mongoose.connect('mongodb://admin1:admin1@ds227674.mlab.com:27674/firttest', { useNewUrlParser: true });
 
 //  To Check if the connection works fine or not
 mongoose.connection.on('connected', () => {
@@ -27,6 +27,7 @@ app.use(hello);
 // For serving images and other static data
 app.use(express.static('public'));
 // Route MiddleWare for any route that start with (/api/user)
+
 app.use('/api/user', usersRoutes);
 app.use('/api/post', postRoutes);
 

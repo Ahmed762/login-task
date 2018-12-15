@@ -77,29 +77,75 @@ router.post('/register', (req, res) => {
 });
 
 
-router.post('checKlogin', (req, res) => {
+router.post('/checKlogin', (req, res) => {
   //  check if there token is there
+  
+//   if(!token){
+//     res.status(400).send(validating.error);
+//   };
 
-  //  decode the token and chekc if it's validate
+//   //  decode the token and chekc if it's validate
+  
+//   let token = jwt.decode(token);
 
-  //  Get the payload from the jsonwebtoken
+//   if(!jwt.verify(token)){
+//     res.status(400).send('token not valid')
+//   } else{
+//     valid = true;
+//   }
 
-  //  return('you are logged in')
-
-  //  you have to login
+//   //  Get the payload from the jsonwebtoken
+  
+//   let payload = jwt.sign(token);
+  
+//   //  return('you are logged in')
+  
+//   if(valid){
+//     return('you are logged in')
+//   }else{
+  
+//     //  you have to login
+  
+//     return('you have to login')
+// }
 });
 
 
-router.post('login', (req, res) => {
+router.post('/login', (req, res) => {
 
-  //  check if there is a user data (username & password) in the req body
-
+  //  check if there is a user data (email & password) in the req body
+  
+  if(!req.body.email && !req.body.password){
+    res.status(404).send('invalide email or password ')
+  }
+  
   //  chekc if there is such email get the user info
+  User.findOne({email: req.body.email}).then(user => {
+      if (!user) {
+        res.status(404).send('user not found')
+      } 
+      bcrypt.compare(req.body.password, user.password, (err, resHash) => {
+        if (resHash) {
+            const token = jwt.sign({email: user.email, _id: user.id}, 'wowpassword');
+            res.send({token});
+        } else {
+          res.status(401).send('password mismatch')
+        }
+      });  
 
-  //  check if the password valid
 
-  //  create a new token and send it back to the user in the response header
+  }).catch(err => {
+      console.log(err.message);
+      res.status(404).send(err.message);
+  });
 
+  // //  check if the password valid
+  // if(!req.body.password===password){
+  //   res.status(400).send('invalid password')
+  // }
+  // //  create a new token and send it back to the user in the response header
+  // var token = jwt.sign({username:req.body.username}, secret);
+  // return res.status(200).send('You\'re now logged in ')
 });
 
 
